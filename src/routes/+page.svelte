@@ -213,7 +213,7 @@
         
     </div>
     <h2>
-        Author: Fauzan Rizky Naufal | Last Updated: 21 August 2026
+        Author: Fauzan Rizky Naufal | Last Updated: 19 November 2026
     </h2>
 </div>
 <div class="mobile">
@@ -331,6 +331,10 @@
 
     .mobile {
         display: none;
+    }
+
+    h2 {
+        text-align: center;
     }
 
     @media only screen and (max-width: 700px) {
