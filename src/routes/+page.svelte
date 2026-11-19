@@ -1,3 +1,8 @@
+<script>
+    import stupidFaust from "../img/stupidfaust.png";
+    import furinaNerd from "../img/furinanerd.jpg";
+</script>
+
 <div class="background">
     <h1 class="class-title">Jadwal Kuliah Prodi Teknik Informatika Kelas 1A</h1>
     <div class="class-items">
@@ -207,9 +212,13 @@
         </div>
         
     </div>
-    <p>
+    <h2>
         Author: Fauzan Rizky Naufal | Last Updated: 21 August 2026
-    </p>
+    </h2>
+</div>
+<div class="mobile">
+    <img id="mobile-warning" src={furinaNerd} alt="">
+    <p id="mobile-warning-text">Maff yh &gt;~&lt; buat sekarang website ini khusus Desktop🙏</p>
 </div>
 
 <style>
@@ -318,5 +327,37 @@
 
     p {
         text-align: center;
+    }
+
+    .mobile {
+        display: none;
+    }
+
+    @media only screen and (max-width: 700px) {
+        .background {
+            display: none;
+        }
+
+        #mobile-warning {
+            width: 50%;
+        }
+
+        #mobile-warning-text {
+            width: 50%;
+        }
+
+        .mobile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            color: black;
+
+            gap: 50px;
+            font-weight: 900;
+        }
     }
 </style>
