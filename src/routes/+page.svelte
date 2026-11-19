@@ -1,6 +1,130 @@
 <script>
+    import { onMount } from "svelte";
     import stupidFaust from "../img/stupidfaust.png";
     import furinaNerd from "../img/furinanerd.jpg";
+
+    const days = [
+        "Minggu",
+        "Senin",
+        "Selasa",
+        "Rabu",
+        "Kamis",
+        "Jumat",
+        "Sabtu"
+    ];
+
+    const schedule = [
+        {
+            time: "07.30 - 08.20",
+            start: "07:30",
+            end: "08:20",
+            days: ["-", "Matematika Diskrit", "Org. & Arsi. Komputer", "Pancasila", "-"]
+        },
+        {
+            time: "08.20 - 09.10",
+            start: "08:20",
+            end: "09:10",
+            days: ["-", "Matematika Diskrit", "Org. & Arsi. Komputer", "Pancasila", "-"]
+        },
+        {
+            time: "09.10 - 10.00",
+            start: "09:10",
+            end: "10:00",
+            days: ["-", "Matematika Diskrit", "Org. & Arsi. Komputer", "Pancasila", "-"]
+        },
+        {
+            time: "10.00 - 10.50",
+            start: "10:00",
+            end: "10:50",
+            days: ["-", "Matematika Diskrit", "Org. & Arsi. Komputer", "Pancasila", "-"]
+        },
+        {
+            time: "10.50 - 11.40",
+            start: "10:50",
+            end: "11:40",
+            days: ["Algo & Pemrograman", "Matematika Diskrit", "Sistem Operasi", "Pendidikan Agama", "-"]
+        },
+        {
+            time: "11.40 - 12.30",
+            start: "11:40",
+            end: "12:30",
+            days: ["Lunch + Dzuhur", "Lunch + Dzuhur", "Lunch + Dzuhur", "Lunch + Dzuhur", "-"]
+        },
+        {
+            time: "12.30 - 13.20",
+            start: "12:30",
+            end: "13:20",
+            days: ["Algo & Pemrograman", "Matematika Diskrit", "Sistem Operasi", "Pendidikan Agama", "-"]
+        },
+        {
+            time: "13.20 - 14.10",
+            start: "13:20",
+            end: "14:10",
+            days: ["Algo & Pemrograman", "English for TIK", "Sistem Operasi", "Pendidikan Agama", "-"]
+        },
+        {
+            time: "14.10 - 15.00",
+            start: "14:10",
+            end: "15:00",
+            days: ["Algo & Pemrograman", "English for TIK", "Sistem Operasi", "Pendidikan Agama", "-"]
+        },
+        {
+            time: "15.00 - 15.15",
+            start: "15:00",
+            end: "15:15",
+            days: ["Sholat Ashar", "Sholat Ashar", "Sholat Ashar", "-", "-"]
+        },
+        {
+            time: "15.15 - 16.05",
+            start: "15:15",
+            end: "16:05",
+            days: ["Algo & Pemrograman", "English for TIK", "Sistem Operasi", "-", "-"]
+        },
+        {
+            time: "16.05 - 16.55",
+            start: "16:05",
+            end: "16:55",
+            days: ["Algo & Pemrograman", "English for TIK", "Sistem Operasi", "-", "-"]
+        }
+    ];
+
+    let currentMinutes = $state(0);
+    let currentDayIndex = $state(-1); // 0 = Senin, 1 = Selasa, ..., 4 = Jumat
+    let dateStr = $state("");
+    let dayName = $state("");
+
+    function timeToMinutes(timeStr) {
+        const [h, m] = timeStr.split(".").join(":").split(":").map(Number);
+        return h * 60 + m;
+    }
+
+    function updateDateTime() {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, "0");
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        dateStr = `${day} / ${month}`;
+        dayName = days[now.getDay()];
+
+        // getDay(): 0 = Minggu, 1 = Senin, ..., 5 = Jumat, 6 = Sabtu
+        currentDayIndex = now.getDay() - 1;
+        currentMinutes = now.getHours() * 60 + now.getMinutes();
+    }
+
+    updateDateTime();
+
+    onMount(() => {
+        updateDateTime();
+        const interval = setInterval(updateDateTime, 30000);
+        return () => clearInterval(interval);
+    });
+
+    function isSlotActive(start, end, dayIdx, subject) {
+        if (subject === "-") return false;
+        if (dayIdx !== currentDayIndex) return false;
+        const startMin = timeToMinutes(start);
+        const endMin = timeToMinutes(end);
+        return currentMinutes >= startMin && currentMinutes < endMin;
+    }
 </script>
 
 <div class="background">
@@ -23,167 +147,42 @@
                     </div>
                     <hr>
                     <div class="schedule-board">
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>07.30 - 08.20</h2>
+                        {#each schedule as item, i}
+                            <div class="schedule-entry">
+                                <div class="time">
+                                    <h2>{item.time}</h2>
+                                </div>
+                                <div class="days">
+                                    {#each item.days as subject, dayIdx}
+                                        <h3
+                                            class="days-entry"
+                                            class:active-matkul={isSlotActive(item.start, item.end, dayIdx, subject)}
+                                        >
+                                            {subject}
+                                        </h3>
+                                    {/each}
+                                </div>
                             </div>
-                            <div class="days">
-                            <h3 class="days-entry">-</h3>
-                            <h3 class="days-entry">Matematika Diskrit</h3>
-                            <h3 class="days-entry">Org. & Arsi. Komputer</h3>
-                            <h3 class="days-entry">Pancasila</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>08.20 - 09.10</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">-</h3>
-                            <h3 class="days-entry">Matematika Diskrit</h3>
-                            <h3 class="days-entry">Org. & Arsi. Komputer</h3>
-                            <h3 class="days-entry">Pancasila</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>09.10 - 10.00</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">-</h3>
-                            <h3 class="days-entry">Matematika Diskrit</h3>
-                            <h3 class="days-entry">Org. & Arsi. Komputer</h3>
-                            <h3 class="days-entry">Pancasila</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>10.00 - 10.50</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">-</h3>
-                            <h3 class="days-entry">Matematika Diskrit</h3>
-                            <h3 class="days-entry">Org. & Arsi. Komputer</h3>
-                            <h3 class="days-entry">Pancasila</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>10.50 - 11.40</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">Algo & Pemrograman</h3>
-                            <h3 class="days-entry">Matematika Diskrit</h3>
-                            <h3 class="days-entry">Sistem Operasi</h3>
-                            <h3 class="days-entry">Pendidikan Agama</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>11.40 - 12.30</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">Lunch + Dzuhur</h3>
-                            <h3 class="days-entry">Lunch + Dzuhur</h3>
-                            <h3 class="days-entry">Lunch + Dzuhur</h3>
-                            <h3 class="days-entry">Lunch + Dzuhur</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>12.30 - 13.20</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">Algo & Pemrograman</h3>
-                            <h3 class="days-entry">Matematika Diskrit</h3>
-                            <h3 class="days-entry">Sistem Operasi</h3>
-                            <h3 class="days-entry">Pendidikan Agama</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>13.20 - 14.10</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">Algo & Pemrograman</h3>
-                            <h3 class="days-entry">English for TIK</h3>
-                            <h3 class="days-entry">Sistem Operasi</h3>
-                            <h3 class="days-entry">Pendidikan Agama</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>14.10 - 15.00</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">Algo & Pemrograman</h3>
-                            <h3 class="days-entry">English for TIK</h3>
-                            <h3 class="days-entry">Sistem Operasi</h3>
-                            <h3 class="days-entry">Pendidikan Agama</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>15.00 - 15.15</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">Sholat Ashar</h3>
-                            <h3 class="days-entry">Sholat Ashar</h3>
-                            <h3 class="days-entry">Sholat Ashar</h3>
-                            <h3 class="days-entry">-</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>15.15 - 16.05</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">Algo & Pemrograman</h3>
-                            <h3 class="days-entry">English for TIK</h3>
-                            <h3 class="days-entry">Sistem Operasi</h3>
-                            <h3 class="days-entry">-</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="schedule-entry">
-                            <div class="time">
-                                <h2>16.05 - 16.55</h2>
-                            </div>
-                            <div class="days">
-                            <h3 class="days-entry">Algo & Pemrograman</h3>
-                            <h3 class="days-entry">English for TIK</h3>
-                            <h3 class="days-entry">Sistem Operasi</h3>
-                            <h3 class="days-entry">-</h3>
-                            <h3 class="days-entry">-</h3>
-                            </div>
-                        </div>
-
+                            {#if i < schedule.length - 1}
+                                <hr>
+                            {/if}
+                        {/each}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="sidenotes">
+        <div class="side">
+            <div class="date">
+                <div class="day-month">
+                    <h1>
+                        {dateStr}
+                    </h1>
+                    <h1>
+                        {dayName}
+                    </h1>
+                </div>
+            </div>
+            <div class="sidenotes">
             <div class="keterangan-mata-kuliah">
                 <h2>Keterangan MatKul             </h2>
                 <h3>Matkul | Dosen | PJ | Ruangan </h3>
@@ -210,6 +209,8 @@
                 
             </div>
         </div>
+        </div>
+        
         
     </div>
     <h2>
@@ -310,16 +311,63 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        text-align: center;
+        padding: 0.15rem 0.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .days-entry.active-matkul {
+        background-color: #dc2626;
+        color: #ffffff;
+        font-weight: 700;
+        border-radius: 6px;
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
+        animation: pulse-red 1.6s infinite ease-in-out;
+    }
+
+    @keyframes pulse-red {
+        0%, 100% {
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+            transform: scale(1);
+        }
+        50% {
+            box-shadow: 0 0 14px rgba(255, 90, 90, 1);
+            transform: scale(1.02);
+        }
+    }
+
+    .side {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .date {
+        width: 100%;
+        height: 30%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .day-month {
+        background-color: white;
+        color: black;
+        padding: 0.25rem 1.5rem;
+        border-top: 10px solid #b78043;
     }
 
     .sidenotes {
-        width: 20%;
+        height: 100%;
+        width: 100%;
         padding: 1rem;
     }
 
     .keterangan-mata-kuliah {
         width: 100%;
-        height: 60%;
+        height: 70%;
         background-color: white;
         color: black;
         padding: 0.5rem;
