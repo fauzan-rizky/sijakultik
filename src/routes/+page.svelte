@@ -218,7 +218,8 @@
 </div>
 <div class="mobile">
     <img id="mobile-warning" src={furinaNerd} alt="">
-    <p id="mobile-warning-text">Maff yh &gt;~&lt; buat sekarang website ini khusus Desktop🙏</p>
+    <p class="mobile-warning-text">Maff yh &gt;~&lt; buat sekarang website ini khusus Desktop🙏</p>
+    <p class="mobile-warning-text">Hehehehhehehe</p>
 </div>
 
 <style>
@@ -346,8 +347,8 @@
             width: 50%;
         }
 
-        #mobile-warning-text {
-            width: 50%;
+        .mobile-warning-text {
+            width: 75%;
         }
 
         .mobile {
